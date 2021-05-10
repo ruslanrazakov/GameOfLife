@@ -30,19 +30,27 @@ namespace GameOfLife.Core
             }
         }
 
+        /// <summary>
+        /// Checks square around cell and returns true, if neighbour cell is alive.
+        /// </summary>
+        /// <param name="cellCoord"></param>
+        /// <param name="currentGeneration"></param>
+        /// <returns></returns>
         private bool CheckCellState(Point cellCoord, Dictionary<Point, Cell> currentGeneration)
         {
             int livesCounter = 0;
-            var neighbours = new HashSet<Point>();
-
-            for(int i = -1; i <= 1; i++)
+            
+            var neighbours = new Point []
             {
-                neighbours.Add(new Point(cellCoord.X + i, cellCoord.Y));
-                neighbours.Add(new Point(cellCoord.X, cellCoord.Y + i));
-                neighbours.Add(new Point(cellCoord.X + i, cellCoord.Y + i));
-                neighbours.Add(new Point(cellCoord.X - i, cellCoord.Y + i));
-                neighbours.Add(new Point(cellCoord.X + i, cellCoord.Y - i));
-            }
+                new Point(cellCoord.X - 1, cellCoord.Y -1),
+                new Point(cellCoord.X, cellCoord.Y - 1),
+                new Point(cellCoord.X + 1,  cellCoord.Y - 1),
+                new Point(cellCoord.X - 1, cellCoord.Y),
+                new Point(cellCoord.X, cellCoord.Y + 1),
+                new Point(cellCoord.X - 1, cellCoord.Y + 1),
+                new Point(cellCoord.X, cellCoord.Y + 1),
+                new Point(cellCoord.X + 1, cellCoord.Y + 1),
+            };
 
             foreach(var neighbour in neighbours)
             {
@@ -53,9 +61,51 @@ namespace GameOfLife.Core
             return livesCounter >= MinCellsAround && livesCounter <= MaxCellsAround;
         }
 
-        public void FillUniverse()
+        public void CreateEmptyUniverse(int universeSize)
         {
+            for(int column = 0; column < universeSize; column++)
+            {
+                for(int raw = 0; raw < universeSize; raw++)
+                {
+                    CurrentGeneration.Add(new Point(raw, column), new Cell());
+                    NextGeneration.Add(new Point(raw, column), new Cell());
+                }
+            }
+        }
 
+        public void DrawCell(Point point)
+        {
+            CurrentGeneration[point].Renew();
+        }
+
+        public void RemoveCell(Point point)
+        {
+            CurrentGeneration[point].Kill();
+        }
+
+        public void DrawGlider(Point startCoords)
+        {
+            if(InBounds(startCoords, figureSize: 3))
+            {
+                CurrentGeneration[new Point(startCoords.X + 1, startCoords.Y)].Renew();
+                CurrentGeneration[new Point(startCoords.X + 2, startCoords.Y + 1)].Renew();
+                CurrentGeneration[new Point(startCoords.X, startCoords.Y + 2)].Renew();
+                CurrentGeneration[new Point(startCoords.X + 1, startCoords.Y + 2)].Renew();
+                CurrentGeneration[new Point(startCoords.X + 2, startCoords.Y + 2)].Renew();
+            }
+        }
+
+        private bool InBounds(Point startCoords, int figureSize)
+        {
+            for (int column = startCoords.Y; column < startCoords.Y + figureSize; column++)
+            {
+                for (int raw = startCoords.X; raw < startCoords.X + figureSize ; raw++)
+                {
+                    if(!CurrentGeneration.ContainsKey(new Point(raw, column)))
+                        return false;
+                }
+            }
+            return true;
         }
     }
 }
