@@ -21,7 +21,7 @@ namespace GameOfLife.Core
         {
             foreach(var cellPosition in CurrentGeneration)
             {
-                var alive  = CheckCellState(cellPosition.Key, CurrentGeneration);
+                var alive  = CheckCellState(cellPosition.Key);
 
                 if(alive)
                     NextGeneration[cellPosition.Key].Renew();
@@ -34,12 +34,12 @@ namespace GameOfLife.Core
         }
 
         /// <summary>
-        /// Checks square around cell and returns true, if neighbour cell is alive.
+        /// Checks square around cell and returns true, if cell is alive.
         /// </summary>
         /// <param name="cellCoord"></param>
         /// <param name="currentGeneration"></param>
         /// <returns></returns>
-        private bool CheckCellState(Point cellCoord, Dictionary<Point, Cell> currentGeneration)
+        private bool CheckCellState(Point cellCoord)
         {
             int livesCounter = 0;
             
@@ -57,7 +57,7 @@ namespace GameOfLife.Core
 
             foreach(var neighbour in neighbours)
             {
-                if(currentGeneration.ContainsKey(neighbour) && currentGeneration[neighbour].Alive)
+                if(CurrentGeneration.ContainsKey(neighbour) && CurrentGeneration[neighbour].Alive)
                     livesCounter++;
             }
             System.Diagnostics.Debug.WriteLine($"{cellCoord.X} {cellCoord.Y} lives is {livesCounter} livesCounter");
