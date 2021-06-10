@@ -13,13 +13,13 @@ namespace GameOfLifeClient.Pages
         
         [Inject]
         public ILogger<Index> Logger { get; set; }
-        public int TimerInterval { get; set; } = 1000;
+        public int TimerInterval { get; set; } = 500;
         public System.Timers.Timer MainLoopTimer { get; set; }
         Universe Universe { get; set; } = new Universe();
         
         protected override async Task OnInitializedAsync()
         {
-            Universe.CreateEmpty(50);
+            Universe.CreateEmpty(10);
             Universe.DrawGlider(new Point(0, 0));
 
             MainLoopTimer = new Timer(TimerInterval)

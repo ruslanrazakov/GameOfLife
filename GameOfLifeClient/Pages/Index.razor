@@ -5,12 +5,12 @@
 <p> UniverseSize is @Universe.Size</p>
 
 <table>
-@for (int i = 0; i < Universe.Size; i++)
+@for (int y = 0; y < Universe.Size; y++)
 {
     <tr>
-    @for (int j = 0; j < Universe.Size; j++)
+    @for (int x = 0; x < Universe.Size; x++)
     {
-        if(Universe.CurrentGeneration[new GameOfLife.Core.Point(i, j)].Alive)
+        if(Universe.CurrentGeneration[new GameOfLife.Core.Point(x, y)].Alive)
         {
             <td style="background-color: blue; width: 8px; height: 8px"></td>
         }

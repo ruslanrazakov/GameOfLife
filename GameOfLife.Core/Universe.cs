@@ -19,18 +19,31 @@ namespace GameOfLife.Core
 
         public void Update()
         {
-            foreach(var cellPosition in CurrentGeneration)
+            CleanNextGeneration();
+            foreach(var cellCoord in CurrentGeneration)
             {
-                var alive  = CheckCellState(cellPosition.Key);
+                var alive  = CheckCellState(cellCoord.Key);
 
                 if(alive)
-                    NextGeneration[cellPosition.Key].Renew();
+                    NextGeneration[new Point((cellCoord.Key.X + Size)%Size, (cellCoord.Key.Y + Size)%Size)].Renew();
                 else 
-                    NextGeneration[cellPosition.Key].Kill();
+                    NextGeneration[new Point((cellCoord.Key.X + Size)%Size, (cellCoord.Key.Y + Size)%Size)].Kill();
 
             }
-            CurrentGeneration = NextGeneration;
 
+            foreach(var cellCoord in CurrentGeneration)
+            {
+                if(NextGeneration[new Point((cellCoord.Key.X + Size)%Size, (cellCoord.Key.Y + Size)%Size)].Alive)
+                    CurrentGeneration[new Point((cellCoord.Key.X + Size)%Size, (cellCoord.Key.Y + Size)%Size)].Renew();
+                else
+                    CurrentGeneration[new Point((cellCoord.Key.X + Size)%Size, (cellCoord.Key.Y + Size)%Size)].Kill();
+            }
+        }
+
+        private void CleanNextGeneration()
+        {
+            foreach(var cell in NextGeneration)
+                NextGeneration[cell.Key].Kill();
         }
 
         /// <summary>
@@ -49,7 +62,7 @@ namespace GameOfLife.Core
                 new Point(cellCoord.X, cellCoord.Y - 1),
                 new Point(cellCoord.X + 1,  cellCoord.Y - 1),
                 new Point(cellCoord.X - 1, cellCoord.Y),
-                new Point(cellCoord.X, cellCoord.Y + 1),
+                new Point(cellCoord.X + 1, cellCoord.Y),
                 new Point(cellCoord.X - 1, cellCoord.Y + 1),
                 new Point(cellCoord.X, cellCoord.Y + 1),
                 new Point(cellCoord.X + 1, cellCoord.Y + 1),
@@ -60,8 +73,16 @@ namespace GameOfLife.Core
                 if(CurrentGeneration.ContainsKey(neighbour) && CurrentGeneration[neighbour].Alive)
                     livesCounter++;
             }
-            System.Diagnostics.Debug.WriteLine($"{cellCoord.X} {cellCoord.Y} lives is {livesCounter} livesCounter");
-            return livesCounter >= MinCellsAround && livesCounter <= MaxCellsAround;
+            //System.Diagnostics.Debug.WriteLine($"{cellCoord.X} {cellCoord.Y} lives is {livesCounter} livesCounter");
+            
+            if((livesCounter == 3 || livesCounter == 2) && CurrentGeneration[new Point((cellCoord.X + Size)%Size, (cellCoord.Y + Size)%Size)].Alive)
+                return true;
+            else if(livesCounter == 3)
+                return true;
+            else if(livesCounter < 2 || livesCounter > 3)
+                return false;
+            else
+                return false;
         }
 
         public void CreateEmpty(int universeSize)

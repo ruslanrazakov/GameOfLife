@@ -10,15 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-<<<<<<< HEAD
-            "program": "${workspaceFolder}/GameOfLifeClient/bin/Debug/net5.0/GameOfLifeClient.exe",
+            "program": "${workspaceFolder}/GameOfLifeClient/bin/Debug/net5.0/GameOfLifeClient.dll",
             "args": [],
             "cwd": "${workspaceFolder}/GameOfLifeClient",
-=======
-            "program": "${workspaceFolder}/GameOfLife.Client/bin/Debug/net5.0/GameOfLife.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/GameOfLife.Client",
->>>>>>> e77b7a2a6c02521072bf5de8ccbb64a16b3abf57
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {
