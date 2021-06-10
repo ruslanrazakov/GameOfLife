@@ -5,9 +5,9 @@ namespace GameOfLife.Core
 {
     public class Universe
     {
-        public int UniverseSize { get; set; }
-        public int MinCellsAround { get; set; }
-        public int MaxCellsAround { get; set; }
+        public int Size { get; set; }
+        public int MinCellsAround { get; set; } = 2;
+        public int MaxCellsAround { get; set; } = 3;
         public Dictionary<Point, Cell> CurrentGeneration { get; private set; }
         public Dictionary<Point, Cell> NextGeneration { get; private set; }
         
@@ -17,17 +17,20 @@ namespace GameOfLife.Core
             NextGeneration = new Dictionary<Point, Cell>();
         }
 
-        public void UpdateUniverse()
+        public void Update()
         {
             foreach(var cellPosition in CurrentGeneration)
             {
                 var alive  = CheckCellState(cellPosition.Key, CurrentGeneration);
 
-                if(alive) NextGeneration[cellPosition.Key].Renew();
-                else NextGeneration[cellPosition.Key].Kill();
+                if(alive)
+                    NextGeneration[cellPosition.Key].Renew();
+                else 
+                    NextGeneration[cellPosition.Key].Kill();
 
-                CurrentGeneration = NextGeneration;
             }
+            CurrentGeneration = NextGeneration;
+
         }
 
         /// <summary>
@@ -57,12 +60,13 @@ namespace GameOfLife.Core
                 if(currentGeneration.ContainsKey(neighbour) && currentGeneration[neighbour].Alive)
                     livesCounter++;
             }
-
+            System.Diagnostics.Debug.WriteLine($"{cellCoord.X} {cellCoord.Y} lives is {livesCounter} livesCounter");
             return livesCounter >= MinCellsAround && livesCounter <= MaxCellsAround;
         }
 
-        public void CreateEmptyUniverse(int universeSize)
+        public void CreateEmpty(int universeSize)
         {
+            Size = universeSize;
             for(int column = 0; column < universeSize; column++)
             {
                 for(int raw = 0; raw < universeSize; raw++)
