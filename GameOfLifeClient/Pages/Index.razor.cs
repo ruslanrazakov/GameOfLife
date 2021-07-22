@@ -14,7 +14,7 @@ namespace GameOfLifeClient.Pages
         [Inject]
         public ILogger<Index> Logger { get; set; }
         public int TimerInterval { get; set; } = 500;
-        public System.Timers.Timer MainLoopTimer { get; set; }
+        public Services.TimerAsync Timer { get; set; }
         Universe Universe { get; set; } = new Universe();
         
         protected override async Task OnInitializedAsync()
@@ -22,17 +22,15 @@ namespace GameOfLifeClient.Pages
             Universe.CreateEmpty(10);
             Universe.DrawGlider(new Point(0, 0));
 
-            MainLoopTimer = new Timer(TimerInterval)
-            {
-                Enabled = true
-            };
-            MainLoopTimer.Elapsed += Update;
+            Timer = new Services.TimerAsync(delay: 500);
+            await Timer.Start(async () => await Update());
         }
 
-        private void Update(object sender, ElapsedEventArgs e)
+        private async Task Update()
         {
             Universe.Update();
-            InvokeAsync(() => StateHasChanged());
+            StateHasChanged();
+            //await 
         }
     }
 }
